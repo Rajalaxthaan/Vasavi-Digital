@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sri Vasavi Digital | Capture Every Moment Beautifully</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-darker: #070a0f;
+      --bg-dark: #0d121d;
+      --bg-card: rgba(20, 27, 41, 0.75);
+      --primary-gold: #d4af37;
+      --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+      --text-white: #ffffff;
+      --text-gray: #a0aec0;
+      --border-glass: rgba(212, 175, 55, 0.2);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: var(--bg-darker); color: var(--text-white); line-height: 1.6; position: relative; }
+    
+    /* BACKGROUND BUTTERFLY CANVAS - Lies behind content */
+    #butterflyCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none; /* Mouse elements click aagum */
+      z-index: 0; /* Ensures content stays on top */
+    }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
+    .section-padding { padding: 90px 0; position: relative; z-index: 2; }
+    .bg-dark { background-color: rgba(13, 18, 29, 0.85); backdrop-filter: blur(5px); }
+    .bg-darker { background-color: rgba(7, 10, 15, 0.85); backdrop-filter: blur(5px); }
+
+    /* HEADER & NAV */
+    .navbar { position: fixed; top: 0; left: 0; width: 100%; z-index: 1000; background: rgba(7, 10, 15, 0.95); border-bottom: 1px solid var(--border-glass); padding: 15px 0; backdrop-filter: blur(10px); }
+    .nav-container { display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; color: #fff; text-decoration: none; }
+    .logo span { background: var(--gold-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .nav-menu { display: flex; gap: 20px; }
+    .nav-menu a { color: var(--text-gray); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
+    .nav-menu a:hover { color: var(--primary-gold); }
+
+    /* HERO & MOUSE WHEEL ANIMATION */
+    .hero { position: relative; height: 100vh; background: linear-gradient(rgba(7,10,15,0.75), rgba(7,10,15,0.95)), url('images/hero-bg.jpg') center/cover no-repeat; display: flex; align-items: center; justify-content: center; text-align: center; padding: 0 20px; z-index: 2; }
+    .hero-content { max-width: 850px; position: relative; z-index: 3; }
+    .hero-tagline { font-size: 0.85rem; letter-spacing: 3px; text-transform: uppercase; color: var(--primary-gold); margin-bottom: 15px; font-weight: 600; }
+    .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: 3.2rem; line-height: 1.2; margin-bottom: 20px; }
+    .hero p { color: var(--text-gray); font-size: 1rem; margin-bottom: 30px; }
+    .btn-gold { background: var(--gold-gradient); color: #000; padding: 14px 32px; border-radius: 30px; text-decoration: none; font-weight: 700; display: inline-block; transition: 0.3s; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3); position: relative; z-index: 3; }
+    .btn-gold:hover { transform: translateY(-3px); }
+
+    /* Mouse Scrolling Indicator */
+    .mouse-scroll { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); text-decoration: none; z-index: 3; }
+    .mouse { width: 26px; height: 42px; border: 2px solid var(--primary-gold); border-radius: 15px; position: relative; }
+    .wheel { width: 4px; height: 8px; background: var(--primary-gold); border-radius: 2px; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); animation: mouseWheel 1.8s infinite; }
+    @keyframes mouseWheel { 0% { top: 8px; opacity: 1; } 100% { top: 22px; opacity: 0; } }
+
+    /* SECTION TITLES */
+    .section-header { text-align: center; margin-bottom: 50px; position: relative; z-index: 2; }
+    .section-title { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; margin-top: 5px; }
+    .section-sub { color: var(--primary-gold); font-size: 0.85rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+    .title-divider { width: 50px; height: 2px; background: var(--gold-gradient); margin: 12px auto 0; }
+
+    /* SERVICES SECTION */
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; position: relative; z-index: 2; }
+    .service-card { background: var(--bg-card); border: 1px solid var(--border-glass); border-radius: 14px; padding: 30px 22px; backdrop-filter: blur(10px); transition: 0.3s; position: relative; z-index: 2; }
+    .service-card:hover { transform: translateY(-6px); border-color: var(--primary-gold); }
+    .service-icon { font-size: 2.2rem; margin-bottom: 15px; }
+    .service-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; margin-bottom: 10px; }
+    .service-card p { color: var(--text-gray); font-size: 0.9rem; }
+
+    /* PORTFOLIO & NO-CROP CAROUSEL */
+    .portfolio-category { margin-bottom: 50px; position: relative; z-index: 2; }
+    .category-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .category-header h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: var(--primary-gold); }
+    .carousel-controls button { background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass); color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: 0.3s; }
+    .carousel-controls button:hover { background: var(--primary-gold); color: #000; }
+    .carousel-track { display: flex; gap: 20px; overflow-x: auto; scroll-behavior: smooth; padding-bottom: 10px; }
+    .carousel-track::-webkit-scrollbar { display: none; }
+
+    /* 500px WIDTH x 350px HEIGHT BOX */
+    .portfolio-item { 
+      flex: 0 0 500px; 
+      height: 350px; 
+      background: #000; 
+      border: 1px solid var(--border-glass); 
+      border-radius: 12px; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      overflow: hidden; 
+      padding: 10px; 
+      position: relative; 
+      z-index: 2;
+    }
+    .portfolio-item img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+
+    /* LOCAL VIDEO PLAYER (.MP4) */
+    .video-item { flex: 0 0 500px; height: 350px; background: #000; border: 1px solid var(--border-glass); border-radius: 12px; overflow: hidden; position: relative; z-index: 2; }
+    .video-item video { width: 100%; height: 100%; object-fit: contain; background: #000; }
+
+    /* BEFORE / AFTER RESTORATION SLIDER */
+    .ba-slider { position: relative; width: 100%; height: 100%; overflow: hidden; }
+    .ba-slider .img-after { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .ba-slider .img-before-wrapper { position: absolute; top: 0; left: 0; bottom: 0; width: 50%; overflow: hidden; z-index: 2; }
+    .ba-slider .img-before { position: absolute; top: 0; left: 0; height: 100%; object-fit: contain; }
+    .ba-range { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: ew-resize; z-index: 5; }
+    .ba-line { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--primary-gold); z-index: 3; }
+
+    /* WHY CHOOSE US */
+    .why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; position: relative; z-index: 2; }
+    .why-card { background: var(--bg-card); border: 1px solid var(--border-glass); padding: 30px; border-radius: 14px; position: relative; z-index: 2; }
+    .why-num { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; font-weight: 700; color: var(--primary-gold); line-height: 1; margin-bottom: 10px; }
+
+    /* CONTACT SECTION */
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; position: relative; z-index: 2; }
+    .contact-card { background: var(--bg-card); border: 1px solid var(--border-glass); padding: 25px; border-radius: 12px; margin-bottom: 15px; }
+    .contact-card h4 { color: var(--primary-gold); margin-bottom: 5px; }
+    .map-box { border-radius: 12px; overflow: hidden; border: 1px solid var(--border-glass); min-height: 350px; position: relative; z-index: 2; }
+
+    /* FOOTER */
+    footer { background: #030508; text-align: center; padding: 30px 20px; border-top: 1px solid var(--border-glass); color: var(--text-gray); font-size: 0.85rem; position: relative; z-index: 2; }
+
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 2.4rem; }
+      .portfolio-item, .video-item { flex: 0 0 88vw; height: 260px; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .nav-menu { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BACKGROUND ANIMATED BUTTERFLIES CANVAS -->
+  <canvas id="butterflyCanvas"></canvas>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="#home" class="logo">Sri Vasavi <span>Digital</span></a>
+      <nav class="nav-menu">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#why-us">Why Us</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- HOME SECTION -->
+  <section id="home" class="hero">
+    <div class="hero-content">
+      <div class="hero-tagline">Capture Every Moment Beautifully</div>
+      <h1>Professional Photography &amp; Printing Solutions</h1>
+      <p>Wedding Photography | Studio Photography | Flex Printing | Invitation Printing | Notice Printing | Video Editing | Photo Restoration</p>
+      <a href="https://wa.me/919876543210" target="_blank" class="btn-gold">Book Now via WhatsApp</a>
+    </div>
+
+    <a href="#services" class="mouse-scroll" aria-label="Scroll Down">
+      <div class="mouse"><div class="wheel"></div></div>
+    </a>
+  </section>
+
+  <!-- SERVICES SECTION -->
+  <section id="services" class="section-padding bg-dark">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-sub">What We Offer</span>
+        <h2 class="section-title">Our Premium Services</h2>
+        <div class="title-divider"></div>
+      </div>
+
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">📷</div>
+          <h3>Wedding Photography</h3>
+          <p>Capturing emotional candid moments, ritual elegance, and cinematic stories of your special day.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🎙️</div>
+          <h3>Studio Photography</h3>
+          <p>High-end portraiture, commercial framing, dynamic lighting setups, and family portraits.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🖥️</div>
+          <h3>Flex Banner Printing</h3>
+          <p>Vibrant large-format weather-resistant vinyl prints and advertising displays with crisp clarity.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">✉️</div>
+          <h3>Invitation Card Printing</h3>
+          <p>Luxury gold foil, embossed textures, and custom graphic layouts for traditional &amp; modern events.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">📄</div>
+          <h3>Notice Printing</h3>
+          <p>Promotional flyers, event notices, and informational brochures printed on high-grade paper.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🎬</div>
+          <h3>Video Editing</h3>
+          <p>Color grading, 4K cinematic trailer cuts, wedding highlights, sound engineering, and post-production.</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🖼️</div>
+          <h3>Photo Restoration</h3>
+          <p>Advanced digital reconstruction, tear &amp; scratch repair, and recolorization for vintage family heirlooms.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PORTFOLIO SECTION -->
+  <section id="portfolio" class="section-padding bg-darker">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-sub">Masterpiece Portfolio</span>
+        <h2 class="section-title">Our Creative Showcase</h2>
+        <div class="title-divider"></div>
+      </div>
+
+      <!-- 1. Wedding Photography -->
+      <div class="portfolio-category">
+        <div class="category-header">
+          <h3>1. Wedding Photography Gallery</h3>
+          <div class="carousel-controls">
+            <button onclick="scrollNav('c-wedding', -400)">&#10094;</button>
+            <button onclick="scrollNav('c-wedding', 400)">&#10095;</button>
+          </div>
+        </div>
+        <div class="carousel-track" id="c-wedding">
+          <div class="portfolio-item"><img src="images/wedding1.jpg" alt="Wedding 1"></div>
+          <div class="portfolio-item"><img src="images/wedding2.jpg" alt="Wedding 2"></div>
+          <div class="portfolio-item"><img src="images/wedding3.jpg" alt="Wedding 3"></div>
+          <div class="portfolio-item"><img src="images/wedding4.jpg" alt="Wedding 4"></div>
+          <div class="portfolio-item"><img src="images/wedding5.jpg" alt="Wedding 5"></div>
+        </div>
+      </div>
+
+      <!-- 2. Studio Photography -->
+      <div class="portfolio-category">
+        <div class="category-header">
+          <h3>2. Studio Photography &amp; Portraits</h3>
+          <div class="carousel-controls">
+            <button onclick="scrollNav('c-studio', -400)">&#10094;</button>
+            <button onclick="scrollNav('c-studio', 400)">&#10095;</button>
+          </div>
+        </div>
+        <div class="carousel-track" id="c-studio">
+          <div class="portfolio-item"><img src="images/studio1.jpg" alt="Studio 1"></div>
+          <div class="portfolio-item"><img src="images/studio2.jpg" alt="Studio 2"></div>
+          <div class="portfolio-item"><img src="images/studio3.jpg" alt="Studio 3"></div>
+          <div class="portfolio-item"><img src="images/studio4.jpg" alt="Studio 4"></div>
+          <div class="portfolio-item"><img src="images/studio5.jpg" alt="Studio 5"></div>
+        </div>
+      </div>
+
+      <!-- 3. Flex Banners -->
+      <div class="portfolio-category">
+        <div class="category-header">
+          <h3>3. Flex Banner Designs</h3>
+          <div class="carousel-controls">
+            <button onclick="scrollNav('c-flex', -400)">&#10094;</button>
+            <button onclick="scrollNav('c-flex', 400)">&#10095;</button>
+          </div>
+        </div>
+        <div class="carousel-track" id="c-flex">
+          <div class="portfolio-item"><img src="images/flex1.jpg" alt="Flex 1"></div>
+          <div class="portfolio-item"><img src="images/flex2.jpg" alt="Flex 2"></div>
+          <div class="portfolio-item"><img src="images/flex3.jpg" alt="Flex 3"></div>
+          <div class="portfolio-item"><img src="images/flex4.jpg" alt="Flex 4"></div>
+          <div class="portfolio-item"><img src="images/flex5.jpg" alt="Flex 5"></div>
+        </div>
+      </div>
+
+      <!-- 4. Wedding Invitations -->
+      <div class="portfolio-category">
+        <div class="category-header">
+          <h3>4. Wedding Invitation Cards Gallery</h3>
+          <div class="carousel-controls">
+            <button onclick="scrollNav('c-invite', -400)">&#10094;</button>
+            <button onclick="scrollNav('c-invite', 400)">&#10095;</button>
+          </div>
+        </div>
+        <div class="carousel-track" id="c-invite">
+          <div class="portfolio-item"><img src="images/invite1.jpg" alt="Invitation 1"></div>
+          <div class="portfolio-item"><img src="images/invite2.jpg" alt="Invitation 2"></div>
+          <div class="portfolio-item"><img src="images/invite3.jpg" alt="Invitation 3"></div>
+          <div class="portfolio-item"><img src="images/invite4.jpg" alt="Invitation 4"></div>
+          <div class="portfolio-item"><img src="images/invite5.jpg" alt="Invitation 5"></div>
+        </div>
+      </div>
+
+      <!-- 5. Notices -->
+      <div class="portfolio-category">
+        <div class="category-header">
+          <h3>5. Notice &amp; Pamphlet Gallery</h3>
+          <div class="carousel-controls">
+            <button onclick="scrollNav('c-notice', -400)">&#10094;</button>
+            <button onclick="scrollNav('c-notice', 400)">&#10095;</button>
+          </div>
+        </div>
+        <div class="carousel-track" id="c-notice">
+          <div class="portfolio-item"><img src="images/notice1.jpg" alt="Notice 1"></div>
+          <div class="portfolio-item"><img src="images/notice2.jpg" alt="Notice 2"></div>
+          <div class="portfolio-item"><img src="images/notice3.jpg" alt="Notice 3"></div>
+          <div class="portfolio-item"><img src="images/notice4.jpg" alt="Notice 4"></div>
+          <div class="portfolio-item"><img src="images/notice5.jpg" alt="Notice 5"></div>
+        </div>
+      </div>
+
+      <!-- 6. Video Gallery (.mp4 Player Support) -->
+      <div class="portfolio-category">
+        <div class="category-header">
+          <h3>6. Video Editing Gallery (.mp4 Video Samples)</h3>
+          <div class="carousel-controls">
+            <button onclick="scrollNav('c-video', -400)">&#10094;</button>
+            <button onclick="scrollNav('c-video', 400)">&#10095;</button>
+          </div>
+        </div>
+        <div class="carousel-track" id="c-video">
+          <div class="video-item">
+            <video controls poster="images/video1_thumb.jpg">
+              <source src="images/video1.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="video-item">
+            <video controls poster="images/video2_thumb.jpg">
+              <source src="images/video2.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="video-item">
+            <video controls poster="images/video3_thumb.jpg">
+              <source src="images/video3.mp4" type="video/mp4">
+            </video>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Photo Restoration (Before / After Slider) -->
+      <div class="portfolio-category">
+        <div class="category-header">
+          <h3>7. Photo Restoration (Interactive Before / After)</h3>
+          <div class="carousel-controls">
+            <button onclick="scrollNav('c-restore', -400)">&#10094;</button>
+            <button onclick="scrollNav('c-restore', 400)">&#10095;</button>
+          </div>
+        </div>
+        <div class="carousel-track" id="c-restore">
+          <div class="portfolio-item ba-container">
+            <div class="ba-slider">
+              <img src="images/restore1_after.jpg" alt="After Restored" class="img-after">
+              <div class="img-before-wrapper">
+                <img src="images/restore1_before.jpg" alt="Before Damaged" class="img-before">
+              </div>
+              <input type="range" min="0" max="100" value="50" class="ba-range" oninput="slideBA(this)">
+              <div class="ba-line"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section id="why-us" class="section-padding bg-dark">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-sub">Excellence Guaranteed</span>
+        <h2 class="section-title">Why Choose Us</h2>
+        <div class="title-divider"></div>
+      </div>
+
+      <div class="why-grid">
+        <div class="why-card">
+          <div class="why-num">01</div>
+          <h3>Professional Camera Equipment</h3>
+          <p>Full-frame ultra-high resolution cameras, prime lenses, and studio lighting setups for ultimate detail.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-num">02</div>
+          <h3>Experienced Editors</h3>
+          <p>Our editing team specializes in fine art skin retouching, color theory, and digital restoration magic.</p>
+        </div>
+        <div class="why-card">
+          <div class="why-num">03</div>
+          <h3>Premium Quality Printing</h3>
+          <p>High-DPI color-calibrated printers using UV-resistant inks ensuring long-lasting print vibrant colors.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="section-padding bg-darker">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-sub">Get In Touch</span>
+        <h2 class="section-title">Contact &amp; Location</h2>
+        <div class="title-divider"></div>
+      </div>
+
+      <div class="contact-grid">
+        <div>
+          <div class="contact-card">
+            <h4>📍 Address</h4>
+            <p>Main Road, Near Clock Tower, Commercial District, Tamil Nadu, India</p>
+          </div>
+          <div class="contact-card">
+            <h4>📞 Phone / WhatsApp</h4>
+            <p>+91 98765 43210 / +91 91234 56789</p>
+          </div>
+          <div class="contact-card">
+            <h4>⏰ Business Hours</h4>
+            <p>Mon - Sat: 9:00 AM - 9:00 PM | Sun: 10:00 AM - 6:00 PM</p>
+          </div>
+          <a href="https://wa.me/919876543210" target="_blank" class="btn-gold" style="width:100%; text-align:center;">Direct Chat on WhatsApp</a>
+        </div>
+
+        <div class="map-box">
+          <iframe 
+            title="Location Map"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3919.4977283437295!2d78.6946!3d10.7731!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTDCsDQ2JzIzLjIiTiA3OMKwNDEnNDAuNiJF!5e0!3m2!1sen!2sin!4v1620000000000!5m2!1sen!2sin" 
+            width="100%" 
+            height="100%" 
+            style="border:0;" 
+            allowfullscreen="" 
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2026 Sri Vasavi Digital. All Rights Reserved.</p>
+  </footer>
+
+  <script>
+    // Smooth Carousel Navigation
+    function scrollNav(id, amount) {
+      document.getElementById(id).scrollBy({ left: amount, behavior: 'smooth' });
+    }
+
+    // Interactive Restoration Slider
+    function slideBA(range) {
+      const wrapper = range.previousElementSibling;
+      const line = range.nextElementSibling;
+      const val = range.value + '%';
+      wrapper.style.width = val;
+      line.style.left = val;
+    }
+
+    // BACKGROUND GLOWING BUTTERFLIES CANVAS ANIMATION
+    const canvas = document.getElementById('butterflyCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    // Glowing Palette for Butterflies
+    const colors = [
+      { wing: '#d4af37', glow: '#fcf6ba' }, // Gold
+      { wing: '#00d2ff', glow: '#3a7bd5' }, // Neon Blue
+      { wing: '#ff007f', glow: '#ff758c' }, // Pink Magenta
+      { wing: '#9d50bb', glow: '#6e48aa' }, // Royal Purple
+      { wing: '#00f2fe', glow: '#4facfe' }  // Cyan
+    ];
+
+    class Butterfly {
+      constructor() {
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = 12 + Math.random() * 14;
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.vx = (Math.random() - 0.5) * 1.2;
+        this.vy = (Math.random() - 0.5) * 1.2;
+        this.wingAngle = 0;
+        this.wingSpeed = 0.08 + Math.random() * 0.08;
+        this.angle = Math.atan2(this.vy, this.vx);
+      }
+
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Change directions smoothly
+        if (Math.random() < 0.02) {
+          this.vx += (Math.random() - 0.5) * 0.5;
+          this.vy += (Math.random() - 0.5) * 0.5;
+          // Speed limit
+          this.vx = Math.max(-1.5, Math.min(1.5, this.vx));
+          this.vy = Math.max(-1.5, Math.min(1.5, this.vy));
+        }
+
+        this.angle = Math.atan2(this.vy, this.vx);
+        this.wingAngle += this.wingSpeed;
+
+        // Wrap edges smoothly
+        if (this.x < -50) this.x = width + 50;
+        if (this.x > width + 50) this.x = -50;
+        if (this.y < -50) this.y = height + 50;
+        if (this.y > height + 50) this.y = -50;
+      }
+
+      draw() {
+        ctx.save();
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.angle + Math.PI / 2);
+
+        const wingScale = Math.sin(this.wingAngle);
+
+        // Ambient Glow
+        ctx.shadowColor = this.color.glow;
+        ctx.shadowBlur = 12;
+
+        // Draw Left Wing
+        ctx.save();
+        ctx.scale(wingScale, 1);
+        ctx.beginPath();
+        ctx.fillStyle = this.color.wing;
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(-this.size * 1.5, -this.size * 1.2, -this.size * 1.8, this.size * 0.5, 0, this.size * 0.8);
+        ctx.fill();
+        
+        // Inner Wing Design Pattern
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.beginPath();
+        ctx.arc(-this.size * 0.8, -this.size * 0.3, this.size * 0.25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Draw Right Wing
+        ctx.save();
+        ctx.scale(-wingScale, 1);
+        ctx.beginPath();
+        ctx.fillStyle = this.color.wing;
+        ctx.moveTo(0, 0);
+        ctx.bezierCurveTo(-this.size * 1.5, -this.size * 1.2, -this.size * 1.8, this.size * 0.5, 0, this.size * 0.8);
+        ctx.fill();
+        
+        // Inner Wing Design Pattern
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        ctx.beginPath();
+        ctx.arc(-this.size * 0.8, -this.size * 0.3, this.size * 0.25, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // Body & Antennae
+        ctx.shadowBlur = 0;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.ellipse(0, 0, 1.5, this.size * 0.4, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    // Create 22 Ambient Butterflies
+    const butterflies = Array.from({ length: 22 }, () => new Butterfly());
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      butterflies.forEach(b => {
+        b.update();
+        b.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>
